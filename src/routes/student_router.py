@@ -6,12 +6,15 @@ instance = Institutional.Institutional()
 
 student_rest = Blueprint("student_rest", __name__)
 
+@student_rest.route("/")
 @student_rest.route("/<code>")
 @token_required
-def getStudent(_, code):
+def getStudent(_, code = None):
     return instance.getByCode(code)
 
+@student_rest.route("/course/")
 @student_rest.route("/course/<code>")
-def getCourses(code):
+@token_required
+def getCourses(code = None):
     return instance.getMyCoursesStudent(code)
 

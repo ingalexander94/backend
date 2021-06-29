@@ -10,7 +10,7 @@ class Institutional:
         password = request.json["password"]
         req = requests.get('https://simulador-divisist.herokuapp.com/institucional')
         data = req.json()
-        user = helpers.validateUser(data, code, document, password, "institutional")
+        user = helpers.validateUser(data, document, password, code)
         if user:
             del user["contrasena"]
             token = jwt.generateToken(user, 60)
@@ -19,6 +19,8 @@ class Institutional:
             return response.error("Revise los datos ingresados", 401) 
         
     def getByCode(self, code):
+        if(not code or len(code) < 7):
+            return response.error("Se necesita un código de 7 caracteres", 400)
         req = requests.get("https://simulador-divisist.herokuapp.com/institucional")
         data = req.json()
         for user in data:
@@ -27,6 +29,8 @@ class Institutional:
         return response.error("No se encontraron resultados", 400)
     
     def getMyCoursesStudent(self, code):
+        if(not code or len(code) < 7):
+            return response.error("Se necesita un código de 7 caracteres", 400)
         req = requests.get("https://simulador-divisist.herokuapp.com/cursos")
         data = req.json()
         req2 = requests.get("https://simulador-divisist.herokuapp.com/materias")
@@ -44,6 +48,8 @@ class Institutional:
         return response.success("Todo ok!", courses, "")
     
     def getMyCoursesTeacher(self, code):
+        if(not code or len(code) < 7):
+           return response.error("Se necesita un código de 7 caracteres", 400)
         req = requests.get("https://simulador-divisist.herokuapp.com/materias")
         data = req.json()
         courses = []

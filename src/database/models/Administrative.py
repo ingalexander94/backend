@@ -9,7 +9,7 @@ class Administrative:
         password = request.json["password"]
         req = requests.get('https://simulador-divisist.herokuapp.com/administrativo')
         data = req.json()
-        user = helpers.validateUser(data, document, password, "administrative")
+        user = helpers.validateUser(data, document, password, "")
         if user:
             del user["contrasena"]
             token = jwt.generateToken(user, 60)

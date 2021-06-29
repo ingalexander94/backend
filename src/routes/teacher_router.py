@@ -1,14 +1,19 @@
 from flask import Blueprint
+from middleware.validate_token import token_required
 from database.models import Institutional
 
 instance = Institutional.Institutional()
 teacher_rest = Blueprint("teacher_rest", __name__)
 
+@teacher_rest.route("/")
 @teacher_rest.route("/<code>")
-def getTeacher(code):
+@token_required
+def getTeacher(code = None):
     return instance.getByCode(code)
 
+@teacher_rest.route("/course/")
 @teacher_rest.route("/course/<code>")
-def getCourses(code):
+@token_required
+def getCourses(code = None):
     return instance.getMyCoursesTeacher(code)
 
