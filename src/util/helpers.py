@@ -1,4 +1,5 @@
 import functools
+from util import response
 
 def indexedCourses(data):
         return functools.reduce(lambda acc, curr: {**acc, curr["codigo"] : curr }, data , {})

@@ -15,6 +15,6 @@ def getStudent(_, code = None):
 @student_rest.route("/course/")
 @student_rest.route("/course/<code>")
 @token_required
-def getCourses(code = None):
+def getCourses(_,code = None):
     return instance.getMyCoursesStudent(code)
 
