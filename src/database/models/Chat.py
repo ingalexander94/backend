@@ -1,7 +1,7 @@
 from flask import request, Response
+from bson import json_util
 from util import response, emails
 from database import config
-from bson import json_util
 
 mongo = config.mongo
 
@@ -30,6 +30,6 @@ class Chat:
                 "email": userAuth["correo"],
                 "name": f'{userAuth["nombre"]} {userAuth["apellido"]}'
         }
-        data = mongo.db.chat.find({"$or": [ {"receiver": receiver, "transmitter": transmitter} , {"receiver": transmitter, "transmitter": receiver}]})
+        data = mongo.db.chat.find({"$or": [ {"receiver": receiver, "transmitter": transmitter} , {"receiver": transmitter, "transmitter": receiver}]}).sort("date").limit(30)
         chat = json_util.dumps(data)
         return Response(chat, mimetype="applicaton/json")

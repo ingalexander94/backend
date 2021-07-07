@@ -17,3 +17,9 @@ def getTeacher(_,code = None):
 def getCourses(_,code = None):
     return instance.getMyCoursesTeacher(code)
 
+@teacher_rest.route("/course/students/")
+@teacher_rest.route("/course/students/<code>/<group>")
+@token_required
+def getStudentsOfCourse(_, code=None, group=None):
+    return instance.getStudentsOfCourse(code, group)
+

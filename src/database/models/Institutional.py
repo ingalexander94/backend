@@ -50,16 +50,34 @@ class Institutional:
     def getMyCoursesTeacher(self, code):
         if(not code or not code.isdigit() or len(code) != 7):
            return response.error("Se necesita un código de 7 caracteres", 400)
-        req = requests.get("https://simulador-divisist.herokuapp.com/materias")
+        req = requests.get("https://simulador-divisist.herokuapp.com/cursosDocente")
         data = req.json()
+        req2 = requests.get("https://simulador-divisist.herokuapp.com/materias")
+        data2 = req2.json()
         courses = []
+        indexed = helpers.indexedCourses(data2)
         for course in data:
           if course["docente"] == code:
-              del course["docente"]
-              courses.append(course)
+              aux = {
+                  **course,
+                  "materia" : indexed[course["materia"]]
+              }
+              del aux["docente"]
+              courses.append(aux)
         return response.success("Todo ok!", courses, "")
 
-        
+    def getStudentsOfCourse(self, code, group):
+        req = requests.get("https://simulador-divisist.herokuapp.com/institucional")
+        data = req.json()
+        students = []
+        indexed = helpers.indexedCourses(data)
+        req2 = requests.get("https://simulador-divisist.herokuapp.com/cursos")
+        data2 = req2.json()
+        for course in data2:
+            if course["materia"] == code and course["grupo"] == group: 
+              students.append(indexed[course["estudiante"]])
+        return response.success("Todo ok!", students, "")
+
         
               
         
