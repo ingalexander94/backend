@@ -30,3 +30,11 @@ class Notification:
         notifications = json_util.dumps(data)
         return Response(notifications, mimetype="applicaton/json")
         
+    def updateNotification(self, id):
+        if(not id or len(id) != 24):
+            return response.error("Se necesita un id de 24 caracteres", 400)
+        mongo.db.notification.update_one({"_id": ObjectId(id)}, {"$set": {
+            "isActive": False
+        }})
+        return response.success("Notificación actualizada",None, "")
+        

@@ -21,6 +21,12 @@ def createNotification(_):
 def listNotification(_, code=None):
     return instance.getNotifications(code)
 
+@notification_rest.route("/", methods=["PUT"])
+@notification_rest.route("/<id>", methods=["PUT"])
+@token_required
+def updateNotification(_, id=None):
+    return instance.updateNotification(id)
+
 @notification_rest.route("/", methods=["DELETE"])
 @notification_rest.route("/<id>", methods=["DELETE"])
 @token_required
