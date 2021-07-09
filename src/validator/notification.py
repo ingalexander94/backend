@@ -7,3 +7,4 @@ class NotificationSchema(Schema):
     date = fields.DateTime(required=True)
     isActive = fields.Bool(required=True)
     codeReceiver = fields.Str(required=True, validate=Length(equal=7))
+    codeTransmitter = fields.Str(required=True, validate=Length(equal=7))
