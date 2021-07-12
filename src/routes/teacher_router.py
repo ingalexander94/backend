@@ -9,7 +9,7 @@ teacher_rest = Blueprint("teacher_rest", __name__)
 @teacher_rest.route("/<code>")
 @token_required
 def getTeacher(_,code = None):
-    return instance.getByCode(code)
+    return instance.getByCode(code, "docente")
 
 @teacher_rest.route("/course/")
 @teacher_rest.route("/course/<code>")

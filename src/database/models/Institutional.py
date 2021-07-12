@@ -1,81 +1,59 @@
 import requests
 from flask import request
-from util import jwt, response, helpers
+from util import jwt, response, environment
 
 class Institutional:
     
     def login(self):
-        code = request.json["code"]
-        document = request.json["document"]
-        password = request.json["password"]
-        req = requests.get('https://simulador-divisist.herokuapp.com/institucional')
-        data = req.json()
-        user = helpers.validateUser(data, document, password, code)
-        if user:
-            del user["contrasena"]
-            token = jwt.generateToken(user, 60)
-            return response.success("Bienvenido!!", user, token)
-        else:
-            return response.error("Revise los datos ingresados", 401) 
+        info = request.get_json()
+        code = info["code"]
+        role = info["role"]
+        endpoint =  f"estudiante_{code}" if role == "estudiante" else f"docente_{code}"
+        try:
+            req = requests.get(f"{environment.API_URL}/{endpoint}")
+            data = req.json()
+            if data["ok"]:
+                user = data["data"]
+                del user["contrasena"]
+                token = jwt.generateToken(user, 60)
+                return response.success("Bienvenido!!", user, token)
+            else:
+                return response.error("Revise los datos ingresados", 401) 
+        except:
+          return response.error("Revise los datos ingresados", 401) 
         
-    def getByCode(self, code):
+    def getByCode(self, code, role):
         if(not code or not code.isdigit() or len(code) != 7):
             return response.error("Se necesita un código de 7 caracteres", 400)
-        req = requests.get("https://simulador-divisist.herokuapp.com/institucional")
+        req = requests.get(f"{environment.API_URL}/{role}_{code}")
         data = req.json()
-        for user in data:
-          if user["codigo"] == code:
+        if(data["ok"]):
+            user = data["data"]
+            del user["contrasena"]
             return response.success("Todo Ok!", user, "")
-        return response.error("No se encontraron resultados", 400)
+        else: 
+            return response.error("No se encontraron resultados", 400)
     
     def getMyCoursesStudent(self, code):
         if(not code or not code.isdigit() or len(code) != 7):
             return response.error("Se necesita un código de 7 caracteres", 400)
-        req = requests.get("https://simulador-divisist.herokuapp.com/cursos")
-        data = req.json()
-        req2 = requests.get("https://simulador-divisist.herokuapp.com/materias")
-        data2 = req2.json()
-        courses = []
-        indexed = helpers.indexedCourses(data2)
-        for course in data:
-          if course["estudiante"] == code:
-              aux = {
-                  **course,
-                  "materia" : indexed[course["materia"]]
-              }
-              del aux["estudiante"]
-              courses.append(aux)
+        req = requests.get(f"{environment.API_URL}/materias_{code}")
+        courses = req.json()
         return response.success("Todo ok!", courses, "")
     
     def getMyCoursesTeacher(self, code):
         if(not code or not code.isdigit() or len(code) != 7):
            return response.error("Se necesita un código de 7 caracteres", 400)
-        req = requests.get("https://simulador-divisist.herokuapp.com/cursosDocente")
-        data = req.json()
-        req2 = requests.get("https://simulador-divisist.herokuapp.com/materias")
-        data2 = req2.json()
-        courses = []
-        indexed = helpers.indexedCourses(data2)
-        for course in data:
-          if course["docente"] == code:
-              aux = {
-                  **course,
-                  "materia" : indexed[course["materia"]]
-              }
-              del aux["docente"]
-              courses.append(aux)
+        req = requests.get(f"{environment.API_URL}/cursos_{code}")
+        courses = req.json()
+        # Borrar el docente
         return response.success("Todo ok!", courses, "")
 
     def getStudentsOfCourse(self, code, group):
-        req = requests.get("https://simulador-divisist.herokuapp.com/institucional")
-        data = req.json()
-        students = []
-        indexed = helpers.indexedCourses(data)
-        req2 = requests.get("https://simulador-divisist.herokuapp.com/cursos")
-        data2 = req2.json()
-        for course in data2:
-            if course["materia"] == code and course["grupo"] == group: 
-              students.append(indexed[course["estudiante"]])
+        if(not code or not code.isdigit() or len(code) != 7):
+           return response.error("Se necesita un código de 7 caracteres", 400)
+        req = requests.get(f"{environment.API_URL}/listado_{code}_{group}")
+        students = req.json()
         return response.success("Todo ok!", students, "")
 
         
