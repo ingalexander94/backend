@@ -1,6 +1,9 @@
 import requests
 from flask import request
 from util import jwt, response, environment
+from database import config
+
+mongo = config.mongo
 
 class Institutional:
     
@@ -56,6 +59,22 @@ class Institutional:
         students = req.json()
         return response.success("Todo ok!", students, "")
 
+    def getProfits(self, code, risk):
+        if(not code or not code.isdigit() or len(code) != 7):
+            return response.error("Se necesita un código de 7 caracteres", 400)
+        req = requests.get(f"{environment.API_URL}/beneficios_{code}")
+        data = list(req.json())
+        profits = list(mongo.db.profit.find({"riesgo" : risk}, {"nombre":1, "_id": False}))
+        array = []
+        for key in profits:
+            array.append(key["nombre"])
+        aux = list(filter(lambda profit: profit["nombre"] in array, data ))
+        return response.success("todo ok", aux , "")
+    
+        
+        
+      
+        
         
               
         

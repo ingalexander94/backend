@@ -34,3 +34,8 @@ def postulateStudent(_):
 def validatePostulation(_):
     return instance_postulation.validatePostulation()
 
+@student_rest.route("/profits/")
+@student_rest.route("/profits/<code>/<risk>")
+@token_required
+def getProfits(_, code=None, risk=None):
+    return instance_institutional.getProfits(code, risk)
