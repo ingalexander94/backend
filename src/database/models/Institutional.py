@@ -11,7 +11,7 @@ class Institutional:
         info = request.get_json()
         code = info["code"]
         role = info["role"]
-        endpoint =  f"estudiante_{code}" if role == "estudiante" else f"docente_{code}"
+        endpoint =  f"{role}_{code}"
         try:
             req = requests.get(f"{environment.API_URL}/{endpoint}")
             data = req.json()
@@ -28,14 +28,17 @@ class Institutional:
     def getByCode(self, code, role):
         if(not code or not code.isdigit() or len(code) != 7):
             return response.error("Se necesita un código de 7 caracteres", 400)
-        req = requests.get(f"{environment.API_URL}/{role}_{code}")
-        data = req.json()
-        if(data["ok"]):
-            user = data["data"]
-            del user["contrasena"]
-            return response.success("Todo Ok!", user, "")
-        else: 
-            return response.error("No se encontraron resultados", 400)
+        try:
+            req = requests.get(f"{environment.API_URL}/{role}_{code}")
+            data = req.json()
+            if(data["ok"]):
+                user = data["data"]
+                del user["contrasena"]
+                return response.success("Todo Ok!", user, "")
+            else: 
+                return response.error("No se encontraron resultados", 400)
+        except:
+          return response.success("No se encontraron resultados", None, "")
     
     def getMyCoursesStudent(self, code):
         if(not code or not code.isdigit() or len(code) != 7):
@@ -71,10 +74,22 @@ class Institutional:
         aux = list(filter(lambda profit: profit["nombre"] in array, data ))
         return response.success("todo ok", aux , "")
     
-        
-        
+    def getNumberSemesters(self, user):
+        program = user["programa"]
+        program = "sistemas"
+        semesters = requests.get(f"{environment.API_URL}/semestre_{program}");
+        data = semesters.json()
+        quantity = data["cantidadSemestres"]
+        return response.success("todo ok!", quantity, "")
       
-        
+    def studentsOfSemesters(self, user, semester):
+        if not semester:
+          return response.error("El semestre es obligatorio", 400)
+        program = user["programa"]
+        program = "sistemas"
+        students = requests.get(f"{environment.API_URL}/{program}_{semester}");
+        data = students.json()
+        return response.success("todo ok!", data, "")
         
               
         
