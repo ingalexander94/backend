@@ -1,7 +1,9 @@
+import math
 from flask import request, Response
 from util import response, emails
 from database import config
 from bson import json_util
+from pymongo import DESCENDING
 
 mongo = config.mongo
 
@@ -38,5 +40,30 @@ class Postulation:
             "student": student,
             "isActive":isActive
         }
+        print(data)
         postulation = mongo.db.postulation.find_one(data)
         return postulation
+    
+    def paginatePostulations(self):
+        totalPostulations = mongo.db.postulation.count_documents({"isActive":True})
+        page = request.args.get("page", default=1, type= int)
+        perPage = request.args.get("perPage", default=5, type= int)
+        totalPages = math.ceil(totalPostulations/perPage)
+        offset = ((page-1) * perPage) if page > 0 else 0
+        data = mongo.db.postulation.find().sort("date", DESCENDING).skip(offset).limit(perPage)
+        postulations = json_util.dumps({
+            "totalPages": totalPages,
+            "data": data
+        })
+        return Response(postulations, mimetype="applicaton/json")
+    
+    def filterPostulations(self):
+        code = request.json["code"]
+        data = mongo.db.postulation.find_one({"student.codigo": {"$eq": code} })
+        postulations = json_util.dumps(data)
+        return Response(postulations, mimetype="applicaton/json")
+    
+    def countPostulationUnattended(self):
+        unattended = mongo.db.postulation.count_documents({"state":"SIN ATENDER"})
+        return response.success("todo ok!", unattended, "")
+    

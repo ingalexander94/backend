@@ -10,3 +10,6 @@ class PostulationSchema(Schema) :
 class PostulateSchema(Schema):
     student = fields.Dict(required=True)
     isActive = fields.Bool(required=True)
+    
+class FilterPostulation(Schema):
+    code = fields.Str(required=True, validate=Length(equal=7))

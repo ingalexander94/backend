@@ -1,7 +1,7 @@
 from flask import Blueprint
 from middleware.validate_token import token_required
 from middleware.validate_request import required_params
-from validator.postulation import PostulationSchema, PostulateSchema
+from validator.postulation import FilterPostulation, PostulationSchema, PostulateSchema
 from database.models import Institutional
 from database.models import Postulation
 
@@ -39,3 +39,19 @@ def validatePostulation(_):
 @token_required
 def getProfits(_, code=None, risk=None):
     return instance_institutional.getProfits(code, risk)
+
+@student_rest.route("/postulate")
+@token_required
+def paginatePostulation(_):
+    return instance_postulation.paginatePostulations()
+
+@student_rest.route("/postulate/filter", methods=["POST"])
+@token_required
+@required_params(FilterPostulation())
+def filterPostulation(_):
+    return instance_postulation.filterPostulations()
+
+@student_rest.route("/postulate/counter")
+@token_required
+def countPostulationUnattended(_):
+    return instance_postulation.countPostulationUnattended()
