@@ -42,8 +42,8 @@ def getProfits(_, code=None, risk=None):
 
 @student_rest.route("/postulate")
 @token_required
-def paginatePostulation(_):
-    return instance_postulation.paginatePostulations()
+def paginatePostulation(userAuth):
+    return instance_postulation.paginatePostulations(userAuth)
 
 @student_rest.route("/postulate/filter", methods=["POST"])
 @token_required
