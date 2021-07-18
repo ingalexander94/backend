@@ -35,4 +35,4 @@ def renew(current_user):
 
 # Lanzar servidor
 if __name__ == "__main__":
-    app.run(debug=True, port=environment.PORT)
+    app.run(debug=True, port=environment.PORT, host="0.0.0.0")
