@@ -1,6 +1,6 @@
 import requests
 from flask import request
-from util import jwt, response, environment
+from util import jwt, response, environment, helpers
 from database import config
 
 mongo = config.mongo
@@ -73,25 +73,31 @@ class Institutional:
             array.append(key["nombre"])
         aux = list(filter(lambda profit: profit["nombre"] in array, data ))
         return response.success("todo ok", aux , "")
-    
-    def getNumberSemesters(self, user):
-        program = user["programa"]
-        program = "sistemas"
-        semesters = requests.get(f"{environment.API_URL}/semestre_{program}");
-        data = semesters.json()
-        quantity = data["cantidadSemestres"]
-        return response.success("todo ok!", quantity, "")
       
-    def studentsOfSemesters(self, user, semester):
-        if not semester:
-          return response.error("El semestre es obligatorio", 400)
+    def studentsOfPeriod(self, user, period):
+        if not period:
+          return response.error("El periodo es obligatorio", 400)
         program = user["programa"]
         program = "sistemas"
-        students = requests.get(f"{environment.API_URL}/{program}_{semester}");
+        split = period.split("-")
+        year = split[0]
+        semester = split[1]
+        students = requests.get(f"{environment.API_URL}/{program}_{year}_{semester}");
         data = students.json()
         return response.success("todo ok!", data, "")
         
-              
+    def getSemesters(self, code):
+        if(not code or len(code) != 7 or not code.isdigit()):
+            return response.error("Se necesita un código de 7 caracteres", 400)
+        res = requests.get(f"{environment.API_URL}/semestres_{code}")
+        data = res.json()
+        data = helpers.updateSemestersRegistered(data)
+        pedo = {
+            "data": data,
+            "registered": helpers.countSemesters(data)
+        }
+        return response.success("Todo Ok!", pedo, "")
+                  
         
          
 

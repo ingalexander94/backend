@@ -40,7 +40,6 @@ class Postulation:
             "student": student,
             "isActive":isActive
         }
-        print(data)
         postulation = mongo.db.postulation.find_one(data)
         return postulation
     

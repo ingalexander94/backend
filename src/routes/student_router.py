@@ -55,3 +55,9 @@ def filterPostulation(_):
 @token_required
 def countPostulationUnattended(_):
     return instance_postulation.countPostulationUnattended()
+
+@student_rest.route("/semesters")
+@student_rest.route("/semesters/<code>")
+@token_required
+def getSemesters(_, code=None):
+    return instance_institutional.getSemesters(code)
