@@ -79,6 +79,7 @@ class Institutional:
           return response.error("El periodo es obligatorio", 400)
         program = user["programa"]
         program = "sistemas"
+        period = "2021-1"
         split = period.split("-")
         year = split[0]
         semester = split[1]
