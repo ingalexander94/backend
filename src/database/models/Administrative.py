@@ -22,6 +22,21 @@ class Administrative:
         except:
           return response.error("Revise los datos ingresados", 401) 
         
+    def getByCode(self, code):
+        if(not code or not code.isdigit() or len(code) < 7):
+            return response.error("Se necesita un código de 7 caracteres", 400)
+        try:
+            req = requests.get(f"{environment.API_URL}/vicerrector_{code}")
+            data = req.json()
+            if(data["ok"]):
+                user = data["data"]
+                del user["contrasena"]
+                return response.success("Todo Ok!", user, "")
+            else: 
+                return response.error("No se encontraron resultados", 400)
+        except:
+          return response.success("No se encontraron resultados", None, "")   
+        
     def getFaculties(self):
         req = requests.get(f"{environment.API_URL}/facultades")
         data = req.json()

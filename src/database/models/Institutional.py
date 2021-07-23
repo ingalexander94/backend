@@ -74,10 +74,9 @@ class Institutional:
         aux = list(filter(lambda profit: profit["nombre"] in array, data ))
         return response.success("todo ok", aux , "")
       
-    def studentsOfPeriod(self, user, period):
-        if not period:
-          return response.error("El periodo es obligatorio", 400)
-        program = user["programa"]
+    def studentsOfPeriod(self):
+        data = request.get_json()
+        print(data)
         program = "sistemas"
         period = "2021-1"
         split = period.split("-")

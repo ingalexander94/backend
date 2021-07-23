@@ -6,5 +6,6 @@ class NotificationSchema(Schema):
     url = fields.Str(required=True)
     date = fields.DateTime(required=True)
     isActive = fields.Bool(required=True)
-    codeReceiver = fields.Str(required=True, validate=Length(equal=7))
-    codeTransmitter = fields.Str(required=True, validate=Length(equal=7))
+    codeReceiver = fields.Str(required=True, validate=Length(min=7))
+    codeTransmitter = fields.Str(required=True, validate=Length(min=7))
+    roleTransmitter = fields.Str(required=True, validate=Length(min=7))

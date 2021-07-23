@@ -12,4 +12,4 @@ class PostulateSchema(Schema):
     isActive = fields.Bool(required=True)
     
 class FilterPostulation(Schema):
-    code = fields.Str(required=True, validate=Length(equal=7))
+    code = fields.Str(required=True, validate=Length(min=7))

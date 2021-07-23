@@ -11,3 +11,8 @@ instance = Administrative.Administrative()
 def getFaculties(_):
     return instance.getFaculties()
     
+@wellness_rest.route("/")
+@wellness_rest.route("/<code>")
+@token_required
+def getStudent(_, code = None):
+    return instance.getByCode(code)
