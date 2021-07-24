@@ -74,12 +74,11 @@ class Institutional:
         aux = list(filter(lambda profit: profit["nombre"] in array, data ))
         return response.success("todo ok", aux , "")
       
-    def studentsOfPeriod(self, user, period):
-        if not period:
-          return response.error("El periodo es obligatorio", 400)
-        program = user["programa"]
+    def studentsOfPeriod(self):
+        data = request.get_json()
+        print(data)
         program = "sistemas"
-        period="2021-1"
+        period = "2021-1"
         split = period.split("-")
         year = split[0]
         semester = split[1]
@@ -93,11 +92,11 @@ class Institutional:
         res = requests.get(f"{environment.API_URL}/semestres_{code}")
         data = res.json()
         data = helpers.updateSemestersRegistered(data)
-        pedo = {
+        p = {
             "data": data,
             "registered": helpers.countSemesters(data)
         }
-        return response.success("Todo Ok!", pedo, "")
+        return response.success("Todo Ok!", p, "")
                   
     
          

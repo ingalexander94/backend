@@ -5,6 +5,7 @@ from database import config
 from bson import json_util
 from pymongo import DESCENDING
 
+
 mongo = config.mongo
 
 class Postulation: 
@@ -44,13 +45,13 @@ class Postulation:
         return postulation
     
     def paginatePostulations(self, userAuth):
-        totalPostulations = mongo.db.postulation.count_documents({"isActive":True})
+        totalPostulations = mongo.db.postulation.count_documents({"state":"SIN ATENDER"})
         page = request.args.get("page", default=1, type= int)
         perPage = request.args.get("perPage", default=5, type= int)
         totalPages = math.ceil(totalPostulations/perPage)
         offset = ((page-1) * perPage) if page > 0 else 0
         program = userAuth["programa"]
-        data = mongo.db.postulation.find({"student.programa":program}).sort("date", DESCENDING).skip(offset).limit(perPage)
+        data = mongo.db.postulation.find({"student.programa":program, "state":"SIN ATENDER" }).sort("date", DESCENDING).skip(offset).limit(perPage)
         postulations = json_util.dumps({
             "totalPages": totalPages,
             "data": data
@@ -66,4 +67,7 @@ class Postulation:
     def countPostulationUnattended(self):
         unattended = mongo.db.postulation.count_documents({"state":"SIN ATENDER"})
         return response.success("todo ok!", unattended, "")
+    
+    
+
     
