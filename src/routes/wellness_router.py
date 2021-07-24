@@ -1,18 +1,27 @@
 from flask import Blueprint
 from middleware.validate_token import token_required
-from database.models import Administrative
+from database.models import Administrative, Postulation
 
 wellness_rest = Blueprint("wellness_rest", __name__)
 
-instance = Administrative.Administrative()
+instanceAdministrativo = Administrative.Administrative()
+instancePostulation = Postulation.Postulation()
+
 
 @wellness_rest.route("/faculties")
 @token_required
 def getFaculties(_):
-    return instance.getFaculties()
-    
+    return instanceAdministrativo.getFaculties()
+
+
 @wellness_rest.route("/")
 @wellness_rest.route("/<code>")
 @token_required
-def getStudent(_, code = None):
-    return instance.getByCode(code)
+def getStudent(_, code=None):
+    return instanceAdministrativo.getByCode(code)
+
+
+@wellness_rest.route("/postulations")
+@token_required
+def paginatePostulationsWellness(_):
+    return instancePostulation.paginatePostulationsWellness()
