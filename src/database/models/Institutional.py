@@ -92,11 +92,11 @@ class Institutional:
         res = requests.get(f"{environment.API_URL}/semestres_{code}")
         data = res.json()
         data = helpers.updateSemestersRegistered(data)
-        pedo = {
+        dataRes = {
             "data": data,
             "registered": helpers.countSemesters(data)
         }
-        return response.success("Todo Ok!", pedo, "")
+        return response.success("Todo Ok!", dataRes, "")
                   
         
          

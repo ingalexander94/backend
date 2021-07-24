@@ -50,6 +50,7 @@ class Postulation:
         totalPages = math.ceil(totalPostulations/perPage)
         offset = ((page-1) * perPage) if page > 0 else 0
         program = userAuth["programa"]
+        print("programa ",program) 
         data = mongo.db.postulation.find({"student.programa":program}).sort("date", DESCENDING).skip(offset).limit(perPage)
         postulations = json_util.dumps({
             "totalPages": totalPages,
