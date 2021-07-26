@@ -76,7 +76,6 @@ class Institutional:
       
     def studentsOfPeriod(self):
         data = request.get_json()
-        print(data)
         program = "sistemas"
         period = "2021-1"
         split = period.split("-")

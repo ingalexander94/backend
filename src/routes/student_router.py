@@ -53,8 +53,8 @@ def filterPostulation(_):
 
 @student_rest.route("/postulate/counter")
 @token_required
-def countPostulationUnattended(_):
-    return instance_postulation.countPostulationUnattended()
+def countPostulation(userAuth):
+    return instance_postulation.countPostulation(userAuth["rol"])
 
 @student_rest.route("/semesters")
 @student_rest.route("/semesters/<code>")

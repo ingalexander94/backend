@@ -19,3 +19,9 @@ def error(msg, status):
         "ok":False,
         "msg": msg
         }), status 
+    
+def reject(msg):
+    return jsonify({
+        "ok": False,
+        "msg": msg
+    })

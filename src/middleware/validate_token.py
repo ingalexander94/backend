@@ -11,13 +11,13 @@ def token_required(f):
             token = request.headers["x-token"]
             
         if not token:
-            return response.error("a valid token is missing", 401)
+            return response.reject("a valid token is missing")
         
         try:
           data = jwt.decode(token, environment.SECRET_JWT, algorithms=["HS256"])
-          current_user = data["payload"]
+          current_user = data["payload"] 
         except:
-            return response.error("token is invalid", 401)
+            return response.reject("token is invalid")
         return f(current_user, *args, **kwargs)
     return decorator
           

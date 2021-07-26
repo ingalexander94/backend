@@ -71,9 +71,10 @@ class Postulation:
         postulations = json_util.dumps(data)
         return Response(postulations, mimetype="applicaton/json")
 
-    def countPostulationUnattended(self):
-        unattended = mongo.db.postulation.count_documents({"state": "SIN ATENDER"})
-        return response.success("todo ok!", unattended, "")
+    def countPostulation(self, role):
+        state = "SIN ATENDER" if role == "jefe" else "EN REVISIÓN"
+        counter = mongo.db.postulation.count_documents({"state": state})
+        return response.success("todo ok!", counter, "")
 
     def updatePostulationByBoss(self):
         id = request.json["id"]
