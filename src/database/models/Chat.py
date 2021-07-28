@@ -3,7 +3,7 @@ from bson import json_util
 from util import response, emails
 from database import config
 
-mongo = config.mongo
+mongo = config.mongo 
 
 class Chat:
     

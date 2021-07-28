@@ -4,7 +4,7 @@ from util import jwt, response, environment
 
 class Administrative:
     
-    def login(self):
+    def login(self): 
         info = request.get_json()
         document = info["document"]
         role = info["role"]
