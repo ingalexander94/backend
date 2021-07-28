@@ -50,9 +50,9 @@ class Institutional:
                 print(courses)
                 return response.success("Todo ok!", courses, "")
             else:
-                return response.reject("Esta dirección  no es válida")
+                return response.reject("Está dirección no es válida")
         except:
-            return response.reject("Esta dirección  no es válida")
+            return response.reject("Está dirección no es válida")
 
     def getMyCoursesTeacher(self, code):
         if not code or not code.isdigit() or len(code) != 7:

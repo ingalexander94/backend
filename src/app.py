@@ -35,6 +35,10 @@ app.register_blueprint(wellness_rest, url_prefix='/wellness')
 def renew(current_user):
     return jwt.renewToken(current_user)
 
+@app.route("/ping")
+def ping():
+    return "Todo ok!"
+
 # Lanzar servidor
 if __name__ == "__main__":
     app.run(debug=True, port=environment.PORT, host="0.0.0.0")
