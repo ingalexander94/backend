@@ -27,7 +27,7 @@ class Institutional:
 
     def getByCode(self, code, role):
         if not code or not code.isdigit() or len(code) != 7:
-            return response.error("Se necesita un código de 7 caracteres", 400)
+            return response.reject("Se necesita un código de 7 caracteres")
         try:
             req = requests.get(f"{environment.API_URL}/{role}_{code}")
             data = req.json()
@@ -47,7 +47,6 @@ class Institutional:
             req = requests.get(f"{environment.API_URL}/materias_{code}")
             courses = req.json()
             if courses:
-                print(courses)
                 return response.success("Todo ok!", courses, "")
             else:
                 return response.reject("Está dirección no es válida")
@@ -56,7 +55,7 @@ class Institutional:
 
     def getMyCoursesTeacher(self, code):
         if not code or not code.isdigit() or len(code) != 7:
-            return response.error("Se necesita un código de 7 caracteres", 400)
+            return response.reject("Se necesita un código de 7 caracteres")
 
         req = requests.get(f"{environment.API_URL}/cursos_{code}")
         courses = req.json()

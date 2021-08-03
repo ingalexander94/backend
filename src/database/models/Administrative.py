@@ -1,5 +1,5 @@
 import requests
-from flask import request
+from flask import json, request
 from util import jwt, response, environment
 
 class Administrative:
@@ -37,8 +37,23 @@ class Administrative:
         except:
           return response.success("No se encontraron resultados", None, "")   
         
-    def getFaculties(self):
+    def getFaculties(self): 
         req = requests.get(f"{environment.API_URL}/facultades")
         data = req.json()
         return response.success("Todo ok!", data, "")
+    
+    def validateProgram(self, nameProgram):
+        req = requests.get(f"{environment.API_URL}/facultades")
+        data = req.json()
+        for i in data: 
+            for  j in i["programas"]:            
+                if j == nameProgram:  
+                    return json.dumps(True)
+        return json.dumps(False)
+        
+             
+
+        
+        
+        
          
