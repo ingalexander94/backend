@@ -40,6 +40,11 @@ def validatePostulation(_):
 def getProfits(_, code=None, risk=None):
     return instance_institutional.getProfits(code, risk)
 
+@student_rest.route("/profits/risk")
+@token_required
+def adminProfits(_):
+    return instance_institutional.adminProfits()
+
 @student_rest.route("/postulate")
 @token_required
 def paginatePostulation(userAuth):

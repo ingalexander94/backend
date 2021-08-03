@@ -1,0 +1,51 @@
+from datetime import datetime
+import bson
+from flask import request, Response
+from util import response, emails
+from database import config
+from database.models import Postulation
+from bson import json_util
+from bson.objectid import ObjectId
+
+mongo = config.mongo
+
+instance_postulation =  Postulation.Postulation()
+
+class Meet:
+    def createMeet(self):
+        data = request.get_json()
+        id = mongo.db.meet.insert(data)
+        data = {
+            **data,
+            "_id": str(id)
+        }
+        postulation = data["postulation"]
+        instance_postulation.updateState(postulation, "NOTIFICADO PARA CITA")
+        date = data["dateFormat"]
+        to = data["student"]["correo"]
+        role = data["role"]
+        message = f"Cordial saludo\nSe le informa que se  encuentra en proceso de seguimiento por bienestar universitario.\nTiene unos minutos libres para que podamos hablar sobre su situación actual o sobre cualquier otra ayuda que te brindemos y  mejorar tu estadía en  la universidad.\nTe recordamos que la reunió esta programada para el {date}.\nQuedamos atentos a cualquier inquietud y respuesta sobre tu asistencia"
+        subject = f"Notificación cita con {role} | SAT"
+        emails.sendEmail(to, message, subject)
+        notification = {
+            "title" : "Tiene una reunión pendiente por confirmar asistencia",
+            "url" :"/estudiante/reunion",
+            "date" : datetime.now().isoformat(),
+            "isActive" : True,
+            "codeReceiver" : data["student"]["codigo"]
+        }
+        mongo.db.notification.insert(notification)
+        return response.success("todo ok", data, "")
+    
+    def getMeetOfStudent(self, code):
+        if not code or not code.isdigit() or len(code) != 7:
+            return response.error("Se necesita un código de 7 caracteres", 400)
+        data = mongo.db.meet.find_one({"state":"NOTIFICADA", "student.codigo":{"$eq": code}})
+        meet = json_util.dumps(data)
+        return Response(meet, mimetype="applicaton/json")
+    
+    def acceptMeet(self, id):
+        accept = request.json["accept"]
+        state = "ACEPTADA" if accept else "RECHAZADA"
+        mongo.db.meet.update_one({"_id": ObjectId(id)}, {"$set": {"state": state}})
+        return response.success(f"Reunión {state.lower()}", {}, "")

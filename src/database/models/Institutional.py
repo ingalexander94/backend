@@ -47,7 +47,6 @@ class Institutional:
             req = requests.get(f"{environment.API_URL}/materias_{code}")
             courses = req.json()
             if courses:
-                print(courses)
                 return response.success("Todo ok!", courses, "")
             else:
                 return response.reject("Está dirección no es válida")
@@ -89,6 +88,17 @@ class Institutional:
             array.append(key["nombre"])
         aux = list(filter(lambda profit: profit["nombre"] in array, data))
         return response.success("todo ok", aux, "")
+    
+    def adminProfits(self):
+        code = request.args.get("code")
+        risk = request.args.get("risk")
+        req = requests.get(f"{environment.API_URL}/beneficios_{code}")
+        data = list(req.json())
+        profits = list(filter(lambda profit: not profit["fechaFinal"], data))
+        profits = list(map(lambda profit : profit["nombre"], profits))
+        profitsDB = list(mongo.db.profit.find({"riesgo": risk}, {"nombre": 1, "_id": False}))
+        data = list(map(lambda profit : {"nombre": profit["nombre"], "state": profit["nombre"] in profits}, profitsDB))
+        return response.success("Todo ok!", data, "")
 
     def studentsOfPeriod(self):
         data = request.get_json()
