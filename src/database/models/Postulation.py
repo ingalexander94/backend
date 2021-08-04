@@ -1,5 +1,4 @@
 import math
-from os import stat
 from flask import request, Response
 from util import response, emails
 from database import config

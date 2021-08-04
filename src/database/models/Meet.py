@@ -1,6 +1,7 @@
+import math
 from datetime import datetime
-import bson
 from flask import request, Response
+from pymongo import DESCENDING
 from util import response, emails
 from database import config
 from database.models import Postulation
@@ -49,3 +50,21 @@ class Meet:
         state = "ACEPTADA" if accept else "RECHAZADA"
         mongo.db.meet.update_one({"_id": ObjectId(id)}, {"$set": {"state": state}})
         return response.success(f"Reunión {state.lower()}", {}, "")
+    
+    def paginateMeets(self, role):
+        page = request.args.get("page", default=1, type=int)
+        perPage = request.args.get("perPage", default=5, type=int)
+        state = request.args.get("state", default="ACEPTADA")
+        date = request.args.get("date")
+        
+        totalMeets = mongo.db.meet.count_documents({"state": state, "date": date, "role": role})
+        totalPages = math.ceil(totalMeets / perPage)
+        offset = ((page - 1) * perPage) if page > 0 else 0
+        data = (
+            mongo.db.meet.find({"state": state, "date": date, "role": role})
+            .sort("date", DESCENDING)
+            .skip(offset)
+            .limit(perPage)
+        )
+        meets = json_util.dumps({"totalPages": totalPages, "data": data})
+        return Response(meets, mimetype="applicaton/json")

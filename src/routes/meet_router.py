@@ -24,3 +24,8 @@ def getMeetOfStudent(_, code=None):
 @token_required
 def acceptMeet(_, id=None):
     return instance.acceptMeet(id)
+
+@meet_rest.route("/paginate")
+@token_required
+def paginateMeets(userAuth):
+    return instance.paginateMeets(userAuth["rol"])
