@@ -9,3 +9,4 @@ class NotificationSchema(Schema):
     codeReceiver = fields.Str(required=True, validate=Length(min=7))
     codeTransmitter = fields.Str(required=True, validate=Length(min=7))
     roleTransmitter = fields.Str(required=True, validate=Length(min=7))
+    

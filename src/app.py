@@ -9,6 +9,7 @@ from routes.student_router import student_rest
 from routes.teacher_router import teacher_rest
 from routes.chat_router import chat_rest
 from routes.wellness_router  import wellness_rest
+from routes.meet_router  import meet_rest
 from util import environment, jwt
 from database import config
 
@@ -29,6 +30,7 @@ app.register_blueprint(boss_rest, url_prefix='/boss')
 app.register_blueprint(chat_rest, url_prefix='/chat')
 app.register_blueprint(notification_rest, url_prefix='/notification')
 app.register_blueprint(wellness_rest, url_prefix='/wellness')
+app.register_blueprint(meet_rest, url_prefix='/meet')
 
 @app.route("/auth/renew")
 @token_required
