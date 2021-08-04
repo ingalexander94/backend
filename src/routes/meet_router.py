@@ -33,3 +33,7 @@ def acceptMeet(_, id=None):
 def getMeeetsStudent(_, code=None):
     return instance.getMeeetsStudent(code)
 
+@meet_rest.route("/paginate")
+@token_required
+def paginateMeets(userAuth):
+    return instance.paginateMeets(userAuth["rol"])
