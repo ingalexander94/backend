@@ -10,6 +10,7 @@ from routes.teacher_router import teacher_rest
 from routes.chat_router import chat_rest
 from routes.wellness_router  import wellness_rest
 from routes.meet_router  import meet_rest
+from routes.binnacle_router  import binnacle_rest
 from util import environment, jwt
 from database import config
 
@@ -31,6 +32,7 @@ app.register_blueprint(chat_rest, url_prefix='/chat')
 app.register_blueprint(notification_rest, url_prefix='/notification')
 app.register_blueprint(wellness_rest, url_prefix='/wellness')
 app.register_blueprint(meet_rest, url_prefix='/meet')
+app.register_blueprint(binnacle_rest, url_prefix='/binnacle')
 
 @app.route("/auth/renew")
 @token_required

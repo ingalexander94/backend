@@ -81,11 +81,6 @@ class Meet:
         totalMeets = mongo.db.meet.count_documents({"state": state, "date": date, "role": role})
         totalPages = math.ceil(totalMeets / perPage)
         offset = ((page - 1) * perPage) if page > 0 else 0
-        data = (
-            mongo.db.meet.find({"state": state, "date": date, "role": role})
-            .sort("date", DESCENDING)
-            .skip(offset)
-            .limit(perPage)
-        )
+        data = mongo.db.meet.find({"state": state, "date": date, "role": role}).sort("date", DESCENDING).skip(offset).limit(perPage)
         meets = json_util.dumps({"totalPages": totalPages, "data": data})
         return Response(meets, mimetype="applicaton/json")
