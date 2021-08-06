@@ -1,8 +1,7 @@
 import math
 from datetime import datetime
-import bson
-from flask import json, request, Response
-from util import response, emails, helpers
+from flask import request, Response
+from util import response, emails
 from flask import request, Response
 from pymongo import DESCENDING
 from util import response, emails
@@ -51,14 +50,20 @@ class Meet:
     def acceptMeet(self, id):
         accept = request.json["accept"]
         state = "ACEPTADA" if accept else "RECHAZADA"
-        mongo.db.meet.update_one({"_id": ObjectId(id)}, {"$set": {"state": state}})
+        set = {"state" : state}
+        if state == "RECHAZADA":
+            set = {
+                **set,
+                "reason": request.json["reason"]
+            }
+        mongo.db.meet.update_one({"_id": ObjectId(id)}, {"$set": set})
         return response.success(f"Reunión {state.lower()}", {}, "")
     
     def getMeeetsStudent(self, code):
         if not code or not code.isdigit() or len(code) != 7:
             return response.reject("Se necesita un código de 7 caracteres")
         try:
-            data = mongo.db.meet.find({"student.codigo":{"$eq":code}})
+            data = mongo.db.meet.find({"student.codigo":{"$eq":code}}).sort("date", DESCENDING)
             meet  = json_util.dumps(data)
             if meet:
                 return Response(meet, mimetype="applicaton/json")

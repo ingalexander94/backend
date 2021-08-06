@@ -25,8 +25,6 @@ def getMeetOfStudent(_, code=None):
 def acceptMeet(_, id=None):
     return instance.acceptMeet(id)
 
-
-
 @meet_rest.route("/meet")
 @meet_rest.route("/meets/<code>")
 @token_required
