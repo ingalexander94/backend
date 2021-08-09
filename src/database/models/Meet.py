@@ -43,7 +43,7 @@ class Meet:
     def getMeetOfStudent(self, code):
         if not code or not code.isdigit() or len(code) != 7:
             return response.error("Se necesita un código de 7 caracteres", 400)
-        data = mongo.db.meet.find_one({"state":"NOTIFICADA", "student.codigo":{"$eq": code}})
+        data = mongo.db.meet.find_one({"state":"SIN RESPONDER", "student.codigo":{"$eq": code}})
         meet = json_util.dumps(data)
         return Response(meet, mimetype="applicaton/json")
     
@@ -58,6 +58,14 @@ class Meet:
             }
         mongo.db.meet.update_one({"_id": ObjectId(id)}, {"$set": set})
         return response.success(f"Reunión {state.lower()}", {}, "")
+    
+    def updateAttendanceMeet(self, id):
+        attendance = request.json["attendance"]
+        student = request.json["student"]
+        set = { "attendance":attendance }
+        mongo.db.meet.update_one({"_id": ObjectId(id)}, {"$set": set})
+        mongo.db.postulation.update_one({"student.codigo":{"$eq":student}}, {"$set": {"state": "EN SEGUIMIENTO"}})
+        return response.success("Todo ok!", {}, "")
     
     def getMeeetsStudent(self, code):
         if not code or not code.isdigit() or len(code) != 7:
@@ -81,6 +89,6 @@ class Meet:
         totalMeets = mongo.db.meet.count_documents({"state": state, "date": date, "role": role})
         totalPages = math.ceil(totalMeets / perPage)
         offset = ((page - 1) * perPage) if page > 0 else 0
-        data = mongo.db.meet.find({"state": state, "date": date, "role": role}).sort("date", DESCENDING).skip(offset).limit(perPage)
+        data = mongo.db.meet.find({"state": state, "date": date, "role": role, "attendance":False}).sort("date", DESCENDING).skip(offset).limit(perPage)
         meets = json_util.dumps({"totalPages": totalPages, "data": data})
         return Response(meets, mimetype="applicaton/json")

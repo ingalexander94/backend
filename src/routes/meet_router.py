@@ -25,6 +25,12 @@ def getMeetOfStudent(_, code=None):
 def acceptMeet(_, id=None):
     return instance.acceptMeet(id)
 
+@meet_rest.route("/attendance", methods=["PUT"])
+@meet_rest.route("/attendance/<id>", methods=["PUT"]) 
+@token_required
+def updateAttendanceMeet(_, id=None):
+    return instance.updateAttendanceMeet(id)
+
 @meet_rest.route("/meet")
 @meet_rest.route("/meets/<code>")
 @token_required
