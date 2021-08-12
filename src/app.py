@@ -9,12 +9,18 @@ from routes.student_router import student_rest
 from routes.teacher_router import teacher_rest
 from routes.chat_router import chat_rest
 from routes.wellness_router  import wellness_rest
+from routes.meet_router  import meet_rest
+from routes.binnacle_router  import binnacle_rest
 from util import environment, jwt
 from database import config
 
 app = Flask(__name__)
 app.config["MONGO_URI"]= environment.MONGO_URL
 config.mongo.init_app(app)
+
+# Cargar datos de prueba para los beneficios 
+config.createProfits() 
+
 CORS(app)
 
 # JWT
@@ -29,11 +35,17 @@ app.register_blueprint(boss_rest, url_prefix='/boss')
 app.register_blueprint(chat_rest, url_prefix='/chat')
 app.register_blueprint(notification_rest, url_prefix='/notification')
 app.register_blueprint(wellness_rest, url_prefix='/wellness')
+app.register_blueprint(meet_rest, url_prefix='/meet')
+app.register_blueprint(binnacle_rest, url_prefix='/binnacle')
 
 @app.route("/auth/renew")
 @token_required
 def renew(current_user):
     return jwt.renewToken(current_user)
+
+@app.route("/ping")
+def ping():
+    return "Todo ok!"
 
 # Lanzar servidor
 if __name__ == "__main__":

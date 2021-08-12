@@ -25,3 +25,9 @@ def getStudent(_, code=None):
 @token_required
 def paginatePostulationsWellness(_):
     return instancePostulation.paginatePostulationsWellness()
+
+@wellness_rest.route("/semester/program")
+@wellness_rest.route("/semester/program/<nameProgram>")
+@token_required
+def validateProgram(_, nameProgram=None):
+    return instanceAdministrativo.validateProgram(nameProgram)

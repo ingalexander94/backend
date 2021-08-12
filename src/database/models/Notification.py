@@ -13,7 +13,7 @@ class Notification:
         id = mongo.db.notification.insert(data)
         notification = {
             **data,
-            "_id": str(id)
+            "_id": str(id) 
         }
         return response.success("Notificación enviada", notification, "")
     

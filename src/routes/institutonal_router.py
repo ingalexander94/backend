@@ -5,10 +5,10 @@ from database.models import Institutional
 
 instance = Institutional.Institutional()
 
-institutional_rest = Blueprint("institutional_rest", __name__)    
+institutional_rest = Blueprint("institutional_rest", __name__)
+
 
 @institutional_rest.route("/login", methods=["POST"])
 @required_params(InstitutionalSchema())
 def login():
     return instance.login()
- 
