@@ -17,6 +17,10 @@ from database import config
 app = Flask(__name__)
 app.config["MONGO_URI"]= environment.MONGO_URL
 config.mongo.init_app(app)
+
+# Cargar datos de prueba para los beneficios 
+config.createProfits() 
+
 CORS(app)
 
 # JWT
